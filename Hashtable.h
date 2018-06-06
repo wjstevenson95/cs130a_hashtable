@@ -23,7 +23,9 @@ public:
 	int hash2(int key); // Hash2 for double hashing
 
 	void insert(int perm, Student s);
+	int insert_helper(int perm, Student s);
 	void lookup(int perm);
+	pair<HashEntry,int> lookup_helper(int perm);
 	void remove(int perm);
 	void print();
 

@@ -22,6 +22,7 @@ int main() {
 	h.insert(5712195,d);
 
 	h.print();
+	h.lookup(7636338);
 
 	return 0;
 }

@@ -41,8 +41,29 @@ double Hashtable::get_load_factor() {
 	return (double)this->num_students / this->TABLE_SIZE;
 }
 
-/// INSERT
+void Hashtable::print() {
+	for(int i = 0; i < this->TABLE_SIZE; i++) {
+		if(this->table[i].key > -1) {
+			cout << to_string(i) + ": " << this->table[i].student.getName() << " " << std::fixed << setprecision(1) << this->table[i].student.getGPA() << endl;
+		} else {
+			cout << to_string(i) + ":" << endl;
+		}
+	}
+}
+
 void Hashtable::insert(int perm, Student s) {
+	int insert_result = this->insert_helper(perm,s);
+
+	if(!insert_result) {
+		cout << "item already present" << endl;
+	} else {
+		cout << "item successfully inserted" << endl;
+	}
+}
+
+
+/// INSERT HELPER
+int Hashtable::insert_helper(int perm, Student s) {
 
 	// Create the entry
 	HashEntry new_entry;
@@ -66,13 +87,12 @@ void Hashtable::insert(int perm, Student s) {
 	} else {
 		int i = 0;
 		while((this->table[hash].key != -20) && (this->table[hash].key != -10) && (this->table[hash].key != perm)) {
+			i++;
 			if(this->hash2(perm) == 0) {
 				hash = (originalSpot + i) % this->TABLE_SIZE;
 			} else {
 				hash = (originalSpot + (i * this->hash2(perm))) % this->TABLE_SIZE;
 			}
-
-			i++;
 		}
 	}
 
@@ -88,23 +108,55 @@ void Hashtable::insert(int perm, Student s) {
 			cout << "New Table Size: " << this->TABLE_SIZE << endl;
 		}
 
-		cout << "item successfully inserted" << endl;
+		return 1;
 	} else {
 		// Student already added
-		cout << "item already present" << endl;
+		return 0;
+	}
+}
+
+/// LOOKUP STUDENT
+void Hashtable::lookup(int perm) {
+	pair<HashEntry,int> lookup_result = this->lookup_helper(perm);
+
+	if(lookup_result.second == -20) {
+		cout << "item not found" << endl;
+	} else {
+		cout << "item found; " << lookup_result.first.student.getName() << " " << lookup_result.second << endl;
 	}
 }
 
 
-void Hashtable::print() {
-	for(int i = 0; i < this->TABLE_SIZE; i++) {
-		if(this->table[i].key > -1) {
-			cout << to_string(i) + ": " << this->table[i].student.getName() << " " << std::fixed << setprecision(1) << this->table[i].student.getGPA() << endl;
-		} else {
-			cout << to_string(i) + ":" << endl;
+///LOOKUP HELPER
+pair<HashEntry, int> Hashtable::lookup_helper(int perm) {
+	// Essentially a helper for code re-use on delete as well.
+	// No print statements, just find Student and return it, if there
+	int hash = this->hash1(perm);
+	int original_spot = hash;
+	if(this->method == "linearprobing") {
+		// 
+		while(this->table[hash].key == -10) {
+			if(hash == this->TABLE_SIZE - 1) {
+				hash = 0;
+			} else {
+				hash++;
+			}
+		}
+	} else {
+		int i = 0;
+		while(this->table[hash].key == -10) {
+			i++;
+			if(this->hash2(perm) == 0) {
+				hash = (original_spot + i) % this->TABLE_SIZE;
+			} else {
+				hash = (original_spot + (i * this->hash2(perm))) % this->TABLE_SIZE;
+			}
 		}
 	}
+
+	return make_pair(this->table[hash],hash);
 }
+
 
 
 
@@ -147,7 +199,7 @@ void Hashtable::resize_table() {
 
 	// Now add old items from temp table to new table
 	for(int i = 0; i < old_size; i++) {
-		this->insert(temp[i].key,temp[i].student);
+		int dummy = this->insert_helper(temp[i].key,temp[i].student);
 	}
 	
 
