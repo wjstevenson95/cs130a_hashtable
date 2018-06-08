@@ -43,12 +43,15 @@ double Hashtable::get_load_factor() {
 
 void Hashtable::print() {
 	for(int i = 0; i < this->TABLE_SIZE; i++) {
-		if(this->table[i].key > -1) {
-			cout << to_string(i) + ": " << this->table[i].student.getName() << " " << std::fixed << setprecision(1) << this->table[i].student.getGPA() << endl;
-		} else {
-			cout << to_string(i) + ":" << endl;
+		if(this->table[i].key >= 0) {
+			cout << "(" << this->table[i].key;
+			cout << "," << this->table[i].student.getName() << ",";
+			cout << std::fixed << setprecision(1) << this->table[i].student.getGPA();
+			cout << ")";
 		}
 	}
+
+	cout << endl;
 }
 
 void Hashtable::insert(int perm, Student s) {
@@ -105,7 +108,6 @@ int Hashtable::insert_helper(int perm, Student s) {
 		if(this->get_load_factor() > 0.7) {
 			this->resize_table();
 			cout << "table doubled" << endl;
-			cout << "New Table Size: " << this->TABLE_SIZE << endl;
 		}
 
 		return 1;
@@ -135,7 +137,7 @@ pair<HashEntry, int> Hashtable::lookup_helper(int perm) {
 	int original_spot = hash;
 	if(this->method == "linearprobing") {
 		// 
-		while(this->table[hash].key == -10) {
+		while(this->table[hash].key != -20 && this->table[hash].key != perm) {
 			if(hash == this->TABLE_SIZE - 1) {
 				hash = 0;
 			} else {
@@ -144,7 +146,7 @@ pair<HashEntry, int> Hashtable::lookup_helper(int perm) {
 		}
 	} else {
 		int i = 0;
-		while(this->table[hash].key == -10) {
+		while(this->table[hash].key != -20 && this->table[hash].key != perm) {
 			i++;
 			if(this->hash2(perm) == 0) {
 				hash = (original_spot + i) % this->TABLE_SIZE;
@@ -155,6 +157,21 @@ pair<HashEntry, int> Hashtable::lookup_helper(int perm) {
 	}
 
 	return make_pair(this->table[hash],hash);
+}
+
+void Hashtable::remove(int perm) {
+	// Use the lookup helper to remove the item from the hash table
+	pair<HashEntry, int> lookup_result = this->lookup_helper(perm);
+
+	if(lookup_result.first.key == -20) {
+		cout << "item not present in the table" << endl;
+	} else {
+		Student s;
+		this->table[lookup_result.second].key = -10;
+		this->table[lookup_result.second].student = s;
+		this->num_students--;
+		cout << "item successfully deleted" << endl;
+	}
 }
 
 
@@ -170,15 +187,11 @@ void Hashtable::resize_table() {
 	// Delete old table
 	delete [] this->table;
 
-
 	// Find new table size, then set it to class variable
 	int new_size = (this->TABLE_SIZE * 2) + 1;
 	while(!this->is_prime(new_size)) {
 		new_size += 2;
 	}
-
-	cout << "new_size: " << new_size << endl;
-
 
 	int old_size = this->TABLE_SIZE;
 	this->TABLE_SIZE = new_size;

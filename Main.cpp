@@ -10,19 +10,30 @@ int main() {
 
 	Hashtable h;
 	Student a("asad",3.9);
-	h.insert(8670959,a);
-
 	Student b("victor",3.6);
-	h.insert(7670931,b);
-	
 	Student c("omid",4.0);
+	Student d("jin",2.5);
+
+
+	h.insert(8670959,a);
+	h.insert(7670931,b);
 	h.insert(7636338,c);
 
-	Student d("jin",2.5);
+	h.lookup(7636338);
+
 	h.insert(5712195,d);
+	h.print();
+
+	h.remove(4444444);
+	h.remove(5712195);
 
 	h.print();
-	h.lookup(7636338);
+	h.remove(7636338);
+
+	h.lookup(8670959);
+	h.remove(8670959);
+
+	h.print();
 
 	return 0;
 }
