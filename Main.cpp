@@ -3,37 +3,70 @@
 
 #include <iostream>
 #include <string>
+#include <exception>
 
 using namespace std;
 
 int main() {
 
-	Hashtable h;
-	Student a("asad",3.9);
-	Student b("victor",3.6);
-	Student c("omid",4.0);
-	Student d("jin",2.5);
+	// Check argc for command line arguments...
+	try {
 
+		Hashtable h;
 
-	h.insert(8670959,a);
-	h.insert(7670931,b);
-	h.insert(7636338,c);
+		while(true) {
+			// Get input from the command line
+			string input;
+			cin >> input;
 
-	h.lookup(7636338);
+			if(cin.eof()) {
+				break;
+			}
 
-	h.insert(5712195,d);
-	h.print();
+			else if(input == "linearprobing") {
+				h.set_mode(0);
+			}
 
-	h.remove(4444444);
-	h.remove(5712195);
+			else if(input == "doublehashing") {
+				h.set_mode(1);
+			}
 
-	h.print();
-	h.remove(7636338);
+			else if(input == "insert") {
+				int perm;
+				double gpa;
+				string name;
+				cin >> perm >> name >> gpa;
 
-	h.lookup(8670959);
-	h.remove(8670959);
+				Student new_student(name,gpa);
+				h.insert(perm,new_student);
+			}
 
-	h.print();
+			else if(input == "lookup") {
+				int perm;
+				cin >> perm;
+				h.lookup(perm);
+			}
+
+			else if(input == "delete") {
+				int perm;
+				cin >> perm;
+				h.remove(perm);
+			}
+
+			else if(input == "print") {
+				h.print();
+			}
+
+			else {
+				cin.clear();
+				cout << "input string format was incorrect" << endl;
+			}
+		}
+
+	}
+	catch(exception &ex) {
+		cerr << ex.what() << endl;
+	}
 
 	return 0;
 }

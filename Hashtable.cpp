@@ -36,6 +36,13 @@ int Hashtable::hash2(int key) {
 	return (key % 392113) % this->TABLE_SIZE;
 }
 
+void Hashtable::set_mode(int mode) {
+	if(!mode) {
+		this->method = "linearprobing";
+	} else {
+		this->method = "doublehashing";
+	}
+}
 
 double Hashtable::get_load_factor() {
 	return (double)this->num_students / this->TABLE_SIZE;

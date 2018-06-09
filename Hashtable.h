@@ -29,6 +29,7 @@ public:
 	void remove(int perm);
 	void print();
 
+	void set_mode(int mode);
 	double get_load_factor();
 	bool is_prime(int num);
 	void resize_table();

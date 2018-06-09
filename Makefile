@@ -9,4 +9,4 @@ run: Main.o Hashtable.o Student.o
 	${CXX} $^ -o $@
 
 clean:
-	/bin/rm -f ${BINARIES} *.o
+	/bin/rm -f ${BINARIES} *.o *~
